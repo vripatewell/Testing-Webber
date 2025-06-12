@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Panel Pterodactyl</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Panel Otomatis</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Beranda</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <main>
+        <section class="payment-info">
+            <h2>INFORMASI PEMBAYARAN</h2>
+            <img src="<%= qrImageUrl %>" alt="QRIS Pembayaran">
+            <div class="payment-details">
+                <p><strong>ID Transaksi:</strong> <%= transactionId %></p>
+                <p><strong>Total Pembayaran:</strong> <%= totalAmount %></p>
+                <p><strong>Barang:</strong> Panel Pterodactyl (<%= panelType %>)</p>
+                <p><strong>Expired:</strong> <span id="countdown"></span></p>
+            </div>
+            <p class="note">
+                QRIS pembayaran hanya berlaku dalam 5 menit. Jika sudah melewati 5 menit, pembayaran dinyatakan tidak valid! Jika pembayaran berhasil, data panel akan otomatis muncul di halaman rahasia di halaman utama.
+            </p>
+            <a href="/" class="btn-primary" style="margin-top: 20px;">Kembali ke Halaman Utama</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Panel Otomatis. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Hitung mundur waktu expired
+        const expiryTime = new Date("<%= expiresAt %>").getTime(); // Waktu expired dari server
+        const countdownElement = document.getElementById('countdown');
+
+        const updateCountdown = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = expiryTime - now;
+
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (distance < 0) {
+                clearInterval(updateCountdown);
+                countdownElement.innerHTML = "Expired!";
+            } else {
+                countdownElement.innerHTML = `${minutes} menit ${seconds} detik`;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
